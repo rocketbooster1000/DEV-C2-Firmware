@@ -46,6 +46,7 @@ public:
   uint16_t m_pdb_current;
   uint16_t m_pdb_voltage;
   uint8_t  m_pdb_motor_enabled;
+  uint8_t  m_pdb_soc;
   
   uint32_t m_motor_rpm;
   

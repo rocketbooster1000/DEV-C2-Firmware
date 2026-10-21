@@ -40,6 +40,7 @@ uint8_t m_peripherals_hazard; // 0 OR 1: off or on
 uint16_t m_pdb_current; // PDB Current, stored in milliamps
 uint16_t m_pdb_voltage; // PDB Voltage, stored in millivolts
 uint8_t  m_pdb_motor_enabled; // 0 or 1 (ESC enabled or not)
+uint8_t  m_pdb_soc; // Battery state of charge, 0-100 percent (coulomb counter on PDB)
 
 uint32_t m_motor_rpm; //RPM (Rotations per minute) of the motor, scaled as m_motor_rpm = 1000 * true_rpm
 

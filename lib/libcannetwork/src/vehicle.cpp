@@ -110,6 +110,7 @@ void Vehicle::send_all() {
     data[2] = (g_vehicle.m_pdb_voltage >> 8) & 0xFF;
     data[3] = g_vehicle.m_pdb_voltage & 0xFF;
     data[4] = g_vehicle.m_pdb_motor_enabled;
+    data[5] = g_vehicle.m_pdb_soc;
     
     g_vehicle.send_message(0x200, 8, data);
     g_vehicle.send_message(0x201, 8, heartbeat);
@@ -180,6 +181,7 @@ void Vehicle::on_receive(uint32_t id, uint8_t len, const uint8_t *data) {
     g_vehicle.m_pdb_current = (data[0] << 8) | data[1];
     g_vehicle.m_pdb_voltage = (data[2] << 8) | data[3];
     g_vehicle.m_pdb_motor_enabled = data[4];
+    g_vehicle.m_pdb_soc = data[5];
     break;
   case 0x201:
     // Contains software versions, not useful

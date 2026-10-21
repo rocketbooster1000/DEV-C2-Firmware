@@ -8,6 +8,7 @@
 #include <Arduino.h>
 
 #include <vehicle.hpp>
+#include "coulomb_counter.hpp"
 
 IntervalTimer timer;
 void send_all_wrapper()
@@ -17,6 +18,10 @@ void send_all_wrapper()
 
 // PDB state (placeholder for future power monitoring)
 bool powerSystemOk = true;
+
+// battery state of charge tracking (20 Ah pack, 1 Ah = 3600 coulombs)
+const double BATTERY_CAPACITY_COULOMBS = 20.0 * 3600.0;
+CoulombCounter coulomb_counter(BATTERY_CAPACITY_COULOMBS);
 
 // LED setup
 const int LED = 13;
@@ -108,7 +113,12 @@ void loop()
     current_read_mA = (1000 * (2500 - current_read_mV)) / 40;
     g_vehicle.m_pdb_current = current_read_mA;
 
-    // 5. Voltage Calculations (using averaged raw value)
+    // 5. State of Charge (signed current so regen/charging stays negative)
+    long signed_current_mA = (1000L * (2500L - (long)current_read_mV)) / 40L;
+    coulomb_counter.update(signed_current_mA, millis());
+    g_vehicle.m_pdb_soc = (uint8_t)coulomb_counter.get_soc_percent();
+
+    // 6. Voltage Calculations (using averaged raw value)
     vout_read_mV = (avg_vout_raw * 3300) / 4095;
     // Optimization: (156/10) is 15.6. To keep precision without floats:
     vout_scaled_mV = (vout_read_mV * 156) / 10;
